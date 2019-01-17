@@ -22,4 +22,8 @@ export class UploadPage {
     console.log('ionViewDidLoad UploadPage');
   }
 
+  UploadGCode(){
+    
+  }
+
 }

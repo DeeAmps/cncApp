@@ -11,5 +11,14 @@
 
 
 <ion-content padding>
-  <h1>There</h1>
+    <ion-list>
+
+        <ion-item>
+          <ion-label floating>Upload G Code</ion-label>
+          <ion-input style="margin-top: 18%" type="file" [id]="code"></ion-input>
+        </ion-item>
+    
+      </ion-list>
+    
+      <button style="margin-top: 10%" ion-button full (click)='UploadGCode();'>Upload</button>
 </ion-content>
