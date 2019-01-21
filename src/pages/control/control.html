@@ -6,10 +6,78 @@
 -->
 <ion-header>
 
- 
+
 </ion-header>
 
-
 <ion-content padding>
-  <h1>Do</h1>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-12 class="col-norm">Active State: <span style="color: red">IDLE</span></ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-6 class="col-norm">Work Position: </ion-col>
+      <ion-col col-6 class="col-norm">Machine Position: </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-6 class="col-norm">X : <span style="color: red">0</span> </ion-col>
+      <ion-col col-6 class="col-norm">X : <span style="color: red">0</span> </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-6 class="col-norm">Y : <span style="color: red">0</span> </ion-col>
+      <ion-col col-6 class="col-norm">Y : <span style="color: red">0</span> </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-6 class="col-norm">Z : <span style="color: red">0</span>  </ion-col>
+      <ion-col col-6 class="col-norm">Z : <span style="color: red">0</span>  </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid style="margin-top: 25px">
+    <ion-row>
+      <ion-col col-4 >
+        STEP SIZE
+      </ion-col>
+      <ion-col col-6>
+        <input type="number" min="0"/>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-4 >
+          <button  style="padding-left: 5px" ion-button color="danger">Reset X axis</button>
+      </ion-col>
+      <ion-col col-4 >
+          <button  style="padding-left: 5px" ion-button color="danger">Reset Y axis</button>
+      </ion-col>
+      <ion-col col-4 >
+          <button  style="padding-left: 5px" ion-button color="danger">Reset Z axis</button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid style="margin-top: 25px"> 
+    <ion-row>
+      <ion-col>
+          <button ion-button icon-only>
+              <ion-icon name="md-arrow-round-up"> Y+</ion-icon>
+          </button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col col-6>
+            <button ion-button icon-only>
+                <ion-icon name="md-arrow-round-back"> X-</ion-icon>
+            </button>
+        </ion-col>
+        <ion-col col-6>
+            <button ion-button icon-only>
+                <ion-icon name="md-arrow-round-forward"> X+</ion-icon>
+            </button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+          <ion-col>
+              <button ion-button icon-only>
+                  <ion-icon name="md-arrow-round-down"> Y-</ion-icon>
+              </button>
+          </ion-col>
+        </ion-row>
+  </ion-grid>
 </ion-content>

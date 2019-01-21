@@ -11,6 +11,7 @@ import {HomePage} from "../home/home";
 export class RegisterPage {
 
   constructor(public nav: NavController) {
+    
   }
 
   // register and go to home page
