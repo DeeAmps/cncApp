@@ -37,7 +37,9 @@
         STEP SIZE
       </ion-col>
       <ion-col col-6>
-        <input type="number" min="0"/>
+        <label>
+          <input type="number" min="0"/>
+        </label>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -54,26 +56,26 @@
   </ion-grid>
   <ion-grid style="margin-top: 25px"> 
     <ion-row>
-      <ion-col>
+      <ion-col style="padding-left: 40%">
           <button ion-button icon-only>
               <ion-icon name="md-arrow-round-up"> Y+</ion-icon>
           </button>
       </ion-col>
     </ion-row>
     <ion-row>
-        <ion-col col-6>
+        <ion-col col-6 style="padding-left: 20%">
             <button ion-button icon-only>
                 <ion-icon name="md-arrow-round-back"> X-</ion-icon>
             </button>
         </ion-col>
-        <ion-col col-6>
+        <ion-col col-6 style="padding-left: 10%">
             <button ion-button icon-only>
                 <ion-icon name="md-arrow-round-forward"> X+</ion-icon>
             </button>
         </ion-col>
       </ion-row>
       <ion-row>
-          <ion-col>
+          <ion-col style="padding-left: 40%">
               <button ion-button icon-only>
                   <ion-icon name="md-arrow-round-down"> Y-</ion-icon>
               </button>
