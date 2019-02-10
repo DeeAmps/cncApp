@@ -7,6 +7,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { HomePage } from "../pages/home/home";
 import { LoginPage } from "../pages/login/login";
 
+import { FirebaseServiceProvider } from "../providers/firebase-service/firebase-service"
+
 export interface MenuItem {
     title: string;
     component: any;
@@ -28,6 +30,7 @@ export class MyApp {
     public platform: Platform,
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
+    public auth: FirebaseServiceProvider
   ) {
     this.initializeApp();
 
@@ -38,28 +41,29 @@ export class MyApp {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
+      this.platform.ready().then(() => {
+        this.statusBar.styleDefault();
+      });
 
-      //*** Control Splash Screen
-      // this.splashScreen.show();
-      // this.splashScreen.hide();
-
-      //*** Control Status Bar
-      this.statusBar.styleDefault();
-      this.statusBar.overlaysWebView(false);
-
-      //*** Control Keyboard
+      this.auth.afAuth.authState
+        .subscribe(
+          user => {
+            if (user) {
+              this.rootPage = HomePage;
+            } else {
+              this.rootPage = LoginPage;
+            }
+          },
+          () => {
+            this.rootPage = LoginPage;
+          }
+        );
     });
   }
 
-  openPage(page) {
-    // Reset the content nav to have just this page
-    // we wouldn't want the back button to show in this scenario
-    this.nav.setRoot(page.component);
-  }
-
-  logout() {
-    this.nav.setRoot(LoginPage);
-  }
+  // logout() {
+  //   this.auth.signOut();
+  //   this.nav.setRoot(LoginPage);
+  // }
 
 }

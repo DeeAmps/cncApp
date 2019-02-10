@@ -18,7 +18,7 @@
           <ion-icon name="person" item-start class="text-primary"></ion-icon>
           Full Name
         </ion-label>
-        <ion-input aria-required="true" type="text"></ion-input>
+        <ion-input aria-required="true" type="text" name="name" [(ngModel)]="name"></ion-input>
       </ion-item>
 
       <ion-item>
@@ -26,7 +26,7 @@
           <ion-icon name="mail" item-start class="text-primary"></ion-icon>
           Email
         </ion-label>
-        <ion-input aria-required="true" type="email"></ion-input>
+        <ion-input aria-required="true" type="email" name="email" [(ngModel)]="email"></ion-input>
       </ion-item>
 
       <ion-item>
@@ -34,7 +34,7 @@
           <ion-icon name="lock" item-start class="text-primary"></ion-icon>
           Password
         </ion-label>
-        <ion-input aria-required="true" type="password"></ion-input>
+        <ion-input aria-required="true" type="password" name="password" [(ngModel)]="password"></ion-input>
       </ion-item>
     </form>
 

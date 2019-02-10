@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import {NavController, NavParams, AlertController, LoadingController, Platform} from 'ionic-angular';
+import { AlertController, LoadingController, Platform, NavController } from 'ionic-angular';
 import { ControlPage } from '../control/control';
 import { UploadPage } from '../upload/upload';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
+import {LoginPage} from "../login/login";
+import { FirebaseServiceProvider } from "../../providers/firebase-service/firebase-service"
 
 
 @Component({
@@ -20,12 +22,14 @@ export class HomePage {
   statusMessage: string;
   gettingDevices: Boolean;
 
-  constructor(public navCtrl: NavController,
-              public navParams: NavParams,
+  constructor(
               public loadCtrl : LoadingController,
               private alertCtrl: AlertController,
               public plt: Platform,
-              private bluetoothSerial: BluetoothSerial) {
+              private bluetoothSerial: BluetoothSerial,
+              public auth: FirebaseServiceProvider,
+              private navCtrl : NavController
+  ) {
     bluetoothSerial.enable();
   }
 
@@ -91,4 +95,9 @@ export class HomePage {
           });
 
     }
+
+  Logout(){
+    this.auth.signOut();
+    this.navCtrl.setRoot(LoginPage);
+  }
 }

@@ -11,6 +11,13 @@ import { ControlPage } from "../pages/control/control";
 import { UploadPage } from "../pages/upload/upload";
 import{ BluetoothSerial } from '@ionic-native/bluetooth-serial'
 
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireDatabaseModule, AngularFireDatabase } from '@angular/fire/database';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { firebaseConfig } from "../config/config"
+
+import { FirebaseServiceProvider } from '../providers/firebase-service/firebase-service';
+
 
 
 @NgModule({
@@ -24,6 +31,9 @@ import{ BluetoothSerial } from '@ionic-native/bluetooth-serial'
   ],
   imports: [
     BrowserModule,
+    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireDatabaseModule,
+    AngularFireAuthModule,
     IonicModule.forRoot(MyApp, {
       scrollPadding: false,
       scrollAssist: true,
@@ -43,7 +53,9 @@ import{ BluetoothSerial } from '@ionic-native/bluetooth-serial'
     StatusBar,
     SplashScreen,
     BluetoothSerial,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    AngularFireDatabase,
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    FirebaseServiceProvider
   ]
 })
 export class AppModule {}

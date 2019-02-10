@@ -1,64 +1,51 @@
-import {Component} from "@angular/core";
-import {NavController, AlertController, ToastController, MenuController} from "ionic-angular";
-import {HomePage} from "../home/home";
-import {RegisterPage} from "../register/register";
+import { Component } from "@angular/core";
+import { NavController, AlertController, MenuController} from "ionic-angular";
+import { HomePage } from "../home/home";
+import { RegisterPage } from "../register/register";
+import { FirebaseServiceProvider } from "../../providers/firebase-service/firebase-service"
+
 
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html'
 })
 export class LoginPage {
-
-  constructor(public nav: NavController, public forgotCtrl: AlertController, public menu: MenuController, public toastCtrl: ToastController) {
+  email: string = '';
+  password:string = '';
+  constructor(public navCtrl: NavController, public alert: AlertController, public menu: MenuController, public auth: FirebaseServiceProvider) {
     this.menu.swipeEnable(false);
   }
 
-  // go to register page
-  register() {
-    this.nav.setRoot(RegisterPage);
-  }
-
-  // login and go to home page
-  login() {
-    this.nav.setRoot(HomePage);
-  }
-
-  forgotPass() {
-    let forgot = this.forgotCtrl.create({
-      title: 'Forgot Password?',
-      message: "Enter you email address to send a reset link password.",
-      inputs: [
-        {
-          name: 'email',
-          placeholder: 'Email',
-          type: 'email'
-        },
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          handler: data => {
-            console.log('Cancel clicked');
-          }
-        },
-        {
-          text: 'Send',
-          handler: data => {
-            console.log('Send clicked');
-            let toast = this.toastCtrl.create({
-              message: 'Email was sended successfully',
-              duration: 3000,
-              position: 'top',
-              cssClass: 'dark-trans',
-              closeButtonText: 'OK',
-              showCloseButton: true
-            });
-            toast.present();
-          }
-        }
-      ]
+  presentAlert(msg){
+    const alert =  this.alert.create({
+      message: msg,
+      buttons: ['OK']
     });
-    forgot.present();
+    alert.present();
   }
+
+
+  register() {
+    this.navCtrl.setRoot(RegisterPage);
+  }
+
+  login() {
+    if(this.email.length == 0 || this.password.length == 0){
+      this.presentAlert("Email and Password are required to Login")
+    }
+    else{
+      let credentials = {
+        email: this.email,
+        password: this.password
+      };
+      this.auth.signInWithEmail(credentials)
+        .then(
+          () => this.navCtrl.setRoot(HomePage),
+          error => this.presentAlert(error.message)
+        );
+    }
+    this.navCtrl.setRoot(HomePage);
+  }
+
 
 }
