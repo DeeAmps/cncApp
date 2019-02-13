@@ -40,6 +40,7 @@ export class MyApp {
   }
 
   initializeApp() {
+    // this.logout()
     this.platform.ready().then(() => {
       this.platform.ready().then(() => {
         this.statusBar.styleDefault();
@@ -61,9 +62,9 @@ export class MyApp {
     });
   }
 
-  // logout() {
-  //   this.auth.signOut();
-  //   this.nav.setRoot(LoginPage);
-  // }
+  logout() {
+    this.auth.signOut();
+    this.nav.setRoot(LoginPage);
+  }
 
 }

@@ -43,16 +43,16 @@
     "ionic-native": "^2.9.0",
     "ionicons": "3.0.0",
     "promise-polyfill": "^8.1.0",
-    "rxjs": "^6.0.0",
+    "rxjs": "^6.4.0",
     "rxjs-compat": "^6.4.0",
     "sw-toolbox": "3.6.0",
     "zone.js": "0.8.26"
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.2.1",
-    "typescript": "~2.6.2"
+    "typescript": "^2.8.0"
   },
-  "description": "An Ionic project",
+  "description": "A CNC Machine Controlling Application",
   "cordova": {
     "plugins": {
       "cordova-plugin-bluetoothle": {},

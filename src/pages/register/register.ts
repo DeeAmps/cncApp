@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import { NavController, AlertController } from "ionic-angular";
+import { NavController, AlertController, LoadingController } from "ionic-angular";
 import {LoginPage} from "../login/login";
 import { HomePage } from "../home/home";
 import { FirebaseServiceProvider } from "../../providers/firebase-service/firebase-service"
@@ -14,7 +14,9 @@ export class RegisterPage {
   email: string = '';
   password: string = '';
 
-  constructor(public navCtrl: NavController, public alert: AlertController, public auth: FirebaseServiceProvider) {
+  constructor(public navCtrl: NavController,
+              public alert: AlertController, public auth: FirebaseServiceProvider,
+              public loadCtrl: LoadingController) {
     
   }
 
@@ -45,13 +47,23 @@ export class RegisterPage {
       return;
     }
     else{
+      let loading = this.loadCtrl.create({
+        content: 'Signing you Up....'
+      });
+      loading.present();
       let credentials = {
         email: this.email,
         password: this.password
       }
       this.auth.signUp(credentials).then(
-        () => this.navCtrl.setRoot(HomePage),
-        error => this.presentAlert(error.message)
+        () => {
+          loading.dismiss();
+          this.navCtrl.setRoot(HomePage)
+        },
+        (error) => {
+          loading.dismiss();
+          this.presentAlert(error.message)
+        }
       );
     }
   }

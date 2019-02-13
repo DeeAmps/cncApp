@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { NavController, AlertController, MenuController} from "ionic-angular";
+import { NavController, AlertController, MenuController, LoadingController} from "ionic-angular";
 import { HomePage } from "../home/home";
 import { RegisterPage } from "../register/register";
 import { FirebaseServiceProvider } from "../../providers/firebase-service/firebase-service"
@@ -12,7 +12,7 @@ import { FirebaseServiceProvider } from "../../providers/firebase-service/fireba
 export class LoginPage {
   email: string = '';
   password:string = '';
-  constructor(public navCtrl: NavController, public alert: AlertController, public menu: MenuController, public auth: FirebaseServiceProvider) {
+  constructor(public navCtrl: NavController, public alert: AlertController, public menu: MenuController, public auth: FirebaseServiceProvider, public  loadCtrl: LoadingController) {
     this.menu.swipeEnable(false);
   }
 
@@ -34,17 +34,26 @@ export class LoginPage {
       this.presentAlert("Email and Password are required to Login")
     }
     else{
+      let loading = this.loadCtrl.create({
+        content: 'Signing you In....'
+      });
+      loading.present();
       let credentials = {
         email: this.email,
         password: this.password
       };
       this.auth.signInWithEmail(credentials)
         .then(
-          () => this.navCtrl.setRoot(HomePage),
-          error => this.presentAlert(error.message)
+          () => {
+            loading.dismiss();
+            this.navCtrl.setRoot(HomePage)
+          },
+          (error) => {
+            loading.dismiss();
+            this.presentAlert(error.message)
+          }
         );
     }
-    this.navCtrl.setRoot(HomePage);
   }
 
 

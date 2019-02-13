@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AlertController, LoadingController, Platform, NavController } from 'ionic-angular';
+import { AlertController, LoadingController, Platform, NavController, ToastController  } from 'ionic-angular';
 import { ControlPage } from '../control/control';
 import { UploadPage } from '../upload/upload';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
@@ -14,21 +14,21 @@ import { FirebaseServiceProvider } from "../../providers/firebase-service/fireba
 export class HomePage {
   tab1Root: any = ControlPage;
   tab2Root: any = UploadPage;
-  output:any;
-  message:String;
-  responseTxt:any;
+  message: String;
   unpairedDevices: any;
   pairedDevices: any;
-  statusMessage: string;
-  gettingDevices: Boolean;
+  gettingDevices = false;
+  devices: any[];
+  showDevices: any = [];
 
   constructor(
-              public loadCtrl : LoadingController,
-              private alertCtrl: AlertController,
-              public plt: Platform,
-              private bluetoothSerial: BluetoothSerial,
-              public auth: FirebaseServiceProvider,
-              private navCtrl : NavController
+    public loadCtrl: LoadingController,
+    private alertCtrl: AlertController,
+    public plt: Platform,
+    private bluetoothSerial: BluetoothSerial,
+    public auth: FirebaseServiceProvider,
+    private navCtrl: NavController,
+    public toastController: ToastController
   ) {
     bluetoothSerial.enable();
   }
@@ -36,68 +36,139 @@ export class HomePage {
   success = (data) => alert(data);
   fail = (error) => alert(error);
 
+  selectDevice(address: any) {
+    let alert = this.alertCtrl.create({
+      title: 'Connect',
+      message: "Connect with device?",
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            alert.dismiss();
+          }
+        },
+        {
+          text: 'Connect',
+          handler: () => {
+            let loading = this.loadCtrl.create({
+              content: 'Connection device..',
+            });
+            loading.present();
+            this.bluetoothSerial.connect(address).subscribe(() => {
+              loading.dismiss();
+              this.presentToast("Successfully Connected to Bluetooth Device")
+            }, (err) => {
+              loading.dismiss();
+              this.presentToast("Bluetooth Connection Failed! " + err)
+            });
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  disconnect() {
+    let alert = this.alertCtrl.create({
+      title: 'Disconnect?',
+      message: 'Do you want to Disconnect?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            alert.dismiss();
+          }
+        },
+        {
+          text: 'Disconnect',
+          handler: () => {
+            this.bluetoothSerial.disconnect();
+            this.gettingDevices=null;
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  presentToast(msg){
+    let toast = this.toastController.create({
+      message: msg,
+      showCloseButton: true,
+      position: 'bottom',
+      closeButtonText: 'OK'
+    });
+    toast.present();
+  }
+
+  presentAlert(msg){
+    const alert =  this.alertCtrl.create({
+      message: msg,
+      buttons: ['OK']
+    });
+    alert.present();
+  }
+
+  removeDuplicates(myArr, prop) {
+    return myArr.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
+    });
+  }
+
   ShowAvailableBluetoothDevices(){
-    let alert = this.alertCtrl.create();
-    this.bluetoothSerial.isEnabled()
-      .then(() => {
+    this.pairedDevices = null;
+    this.unpairedDevices = null;
+
+    let loading = this.loadCtrl.create({
+      content: 'Searching Bluetooth Devices...',
+    });
+    loading.present();
+    setTimeout(() => {
+      if(!this.gettingDevices){
+        loading.dismiss()
+        this.bluetoothSerial.clear()
+        this.presentAlert("No Bluetooth Devices Found.")
+      }
+    }, 30000)
+    this.bluetoothSerial.discoverUnpaired().then((success) => {
+        this.unpairedDevices = success;
+        let alert = this.alertCtrl.create();
         alert.setTitle('Available Bluetooth Devices');
-        let loading = this.loadCtrl.create({
-          content: 'Searching Bluetooth Devices...',
-        });
-        loading.present();
-        this.plt.ready().then((readySource) => {
-          console.log("Platform ready " , readySource);
-          this.pairedDevices = null;
-          this.unpairedDevices = null;
+        success.forEach(element => {
           this.gettingDevices = true;
-          this.bluetoothSerial.setDeviceDiscoveredListener().subscribe((dev) => {
-            console.log("FOUND DEVICE ", dev);
-            this.bluetoothSerial.discoverUnpaired().then((success) => {
-                console.log("in here!!");
-                this.unpairedDevices = success;
-                this.gettingDevices = false;
-                success.forEach(element => {
-                  console.log(element);
-                  alert.addInput({
-                    type: 'radio',
-                    label: element,
-                    value: element
-                  })
-                });
-                alert.addButton('Cancel');
-                alert.addButton({
-                  text: 'OK',
-                  handler: data => {
-                    console.log(data);
-                    // this.navCtrl.push(ListBooksPage, { "ListName" : data })
-                  }
-                });
-                loading.dismiss();
-                alert.present();
-              },
-              (err) => {
-                console.log(err);
-                loading.dismiss();
-              });
-            this.bluetoothSerial.list().then((success) => {
-                this.pairedDevices = success;
-              },
-              (err) => {
-                console.log(err);
-              })
-          });
-        })
-          .catch((er) => {
-            console.log("NOT ENABLED " , er);
+          this.showDevices.push(element)
+        });
+        this.removeDuplicates(this.showDevices, "name").forEach((item) => {
+          alert.addInput({
+            type: 'radio',
+            label: item.name,
+            value: item.address
           })
-
-
-          });
-
-    }
+        })
+        alert.addButton('Cancel');
+        alert.addButton({
+          text: 'OK',
+          handler: data => {
+            this.selectDevice(data)
+          }
+        });
+        loading.dismiss();
+        alert.present();
+      },
+      (err) => {
+        loading.dismiss();
+        this.presentToast(err)
+        console.log(err);
+      })
+  }
 
   Logout(){
     this.auth.signOut();
     this.navCtrl.setRoot(LoginPage);
   }
+
 }
+
+
