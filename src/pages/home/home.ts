@@ -117,6 +117,17 @@ export class HomePage {
     });
   }
 
+  containsObject(obj, list) {
+    var i;
+    for (i = 0; i < list.length; i++) {
+      if (list[i] === obj) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   ShowAvailableBluetoothDevices(){
     this.pairedDevices = null;
     this.unpairedDevices = null;
@@ -126,7 +137,7 @@ export class HomePage {
     });
     loading.present();
     setTimeout(() => {
-      if(!this.gettingDevices){
+      if(this.showDevices.length <= 0){
         loading.dismiss()
         this.bluetoothSerial.clear()
         this.presentAlert("No Bluetooth Devices Found.")
@@ -138,8 +149,11 @@ export class HomePage {
         alert.setTitle('Available Bluetooth Devices');
         success.forEach(element => {
           this.gettingDevices = true;
-          this.showDevices.push(element)
+          if(element.address && !this.containsObject(element, this.showDevices)){
+            this.showDevices.push(element)
+          }
         });
+        loading.dismiss()
         this.removeDuplicates(this.showDevices, "name").forEach((item) => {
           alert.addInput({
             type: 'radio',
@@ -154,7 +168,6 @@ export class HomePage {
             this.selectDevice(data)
           }
         });
-        loading.dismiss();
         alert.present();
       },
       (err) => {
